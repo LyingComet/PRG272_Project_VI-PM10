@@ -1,0 +1,10 @@
+WR-0001|Thabo|Cape Buffalo|6|12|Critical|Intensive Care Unit
+WR-0002|Lerato|Black Rhinoceros|9|19|Critical|Intensive Care Unit
+WR-0003|Sipho|Spotted Hyena|4|20|Serious|High-Dependency Ward
+WR-0004|Amahle|Cheetah|3|39|Serious|High-Dependency Ward
+WR-0005|Kagiso|Ground Pangolin|2|40|Stable|Recovery Ward
+WR-0006|Zanele|African Wild Dog|5|59|Stable|Recovery Ward
+WR-0007|Naledi|Leopard|7|60|Recovering|Outdoor Enclosure
+WR-0008|Bongani|Honey Badger|4|79|Recovering|Outdoor Enclosure
+WR-0009|Palesa|Giraffe|11|80|Release-Ready|Pre-Release Camp
+WR-0010|Tumelo|Vervet Monkey|3|95|Release-Ready|Pre-Release Camp
