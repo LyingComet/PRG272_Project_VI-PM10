@@ -125,7 +125,7 @@
             this.btnClear.Location = new System.Drawing.Point(215, 252);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(64, 35);
-            this.btnClear.TabIndex = 10;
+            this.btnClear.TabIndex = 8;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
             // 
@@ -135,7 +135,7 @@
             this.btnSaveChanges.Location = new System.Drawing.Point(82, 252);
             this.btnSaveChanges.Name = "btnSaveChanges";
             this.btnSaveChanges.Size = new System.Drawing.Size(127, 35);
-            this.btnSaveChanges.TabIndex = 9;
+            this.btnSaveChanges.TabIndex = 7;
             this.btnSaveChanges.Text = "Save Changes";
             this.btnSaveChanges.UseVisualStyleBackColor = true;
             // 
@@ -144,37 +144,38 @@
             this.btnAdd.Location = new System.Drawing.Point(12, 252);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(64, 35);
-            this.btnAdd.TabIndex = 2;
+            this.btnAdd.TabIndex = 6;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // txtSpecies
             // 
             this.txtSpecies.Location = new System.Drawing.Point(142, 106);
             this.txtSpecies.Name = "txtSpecies";
             this.txtSpecies.Size = new System.Drawing.Size(137, 22);
-            this.txtSpecies.TabIndex = 8;
+            this.txtSpecies.TabIndex = 3;
             // 
             // txtAge
             // 
             this.txtAge.Location = new System.Drawing.Point(142, 147);
             this.txtAge.Name = "txtAge";
             this.txtAge.Size = new System.Drawing.Size(137, 22);
-            this.txtAge.TabIndex = 7;
+            this.txtAge.TabIndex = 4;
             // 
             // txtScore
             // 
             this.txtScore.Location = new System.Drawing.Point(142, 186);
             this.txtScore.Name = "txtScore";
             this.txtScore.Size = new System.Drawing.Size(137, 22);
-            this.txtScore.TabIndex = 6;
+            this.txtScore.TabIndex = 5;
             // 
             // txtId
             // 
             this.txtId.Location = new System.Drawing.Point(142, 36);
             this.txtId.Name = "txtId";
             this.txtId.Size = new System.Drawing.Size(137, 22);
-            this.txtId.TabIndex = 5;
+            this.txtId.TabIndex = 1;
             // 
             // txtName
             // 

@@ -46,6 +46,69 @@ namespace Project_PRG271
             dgvAnimals.CurrentCell = null;
         }
 
+        //Add button: validate the inputs, append ONE line to animals.txt, then show the result
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            //same validation method Update uses; checkUnique = true because this is a new ID
+            ValidationResult result = AnimalValidator.Validate(txtId.Text, txtName.Text, txtSpecies.Text,
+                txtAge.Text, txtScore.Text, animals, true);
+
+            if (!result.IsValid)
+            {
+                //nothing is saved; name the problem and send the cursor back to that box
+                MessageBox.Show(result.Message, "Please fix this field", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                FocusField(result.Field);
+                return;
+            }
+
+            Animal newAnimal = result.Animal;
+
+            string errorMessage;
+            if (!FileHandler.AppendAnimal(newAnimal, out errorMessage))
+            {
+                //keep what the user typed so they can try again after fixing the file problem
+                MessageBox.Show(errorMessage, "File error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            MessageBox.Show(newAnimal.Id + " (" + newAnimal.Name + ") was added." + Environment.NewLine + Environment.NewLine +
+                "Status: " + newAnimal.Status + Environment.NewLine +
+                "Housing Unit: " + newAnimal.HousingUnit,
+                "Animal added", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            RefreshGrid();
+            ClearInputs();
+        }
+
+        //puts the cursor in the box that failed validation and highlights what is in it
+        private void FocusField(AnimalField field)
+        {
+            TextBox box;
+            switch (field)
+            {
+                case AnimalField.Id: box = txtId; break;
+                case AnimalField.Name: box = txtName; break;
+                case AnimalField.Species: box = txtSpecies; break;
+                case AnimalField.Age: box = txtAge; break;
+                case AnimalField.Score: box = txtScore; break;
+                default: return;
+            }
+
+            box.Focus();
+            box.SelectAll();
+        }
+
+        //empties all the input boxes and puts the cursor back in Animal ID (Clear/Update can reuse this)
+        private void ClearInputs()
+        {
+            txtId.Clear();
+            txtName.Clear();
+            txtSpecies.Clear();
+            txtAge.Clear();
+            txtScore.Clear();
+            txtId.Focus();
+        }
+
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
