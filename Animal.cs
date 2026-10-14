@@ -30,28 +30,28 @@ namespace Project_PRG271
         //SetStatus is gonna set the status and housing from the unit score (and both Add and Update use this so that we only write the rules once)
         public void SetStatus()
         {
-            if (Score <20)
+            if (Score < 20)
             {
                 Status = "Critical";
                 HousingUnit = "Intensive Care Unit";
-            } else if (Score <40)
+            }
+            else if (Score < 40)
             {
                 Status = "Serious";
                 HousingUnit = "High-Dependency Ward";
-
-            } else if (Score<60)
+            }
+            else if (Score < 60)
             {
                 Status = "Stable";
                 HousingUnit = "Recovery Ward";
-            } else if (Score <80) 
+            }
+            else if (Score < 80)
             {
                 Status = "Recovering";
                 HousingUnit = "Outdoor Enclosure";
-
-            } else
-
+            }
+            else // 80 and above
             {
-                //80 and above
                 Status = "Release-Ready";
                 HousingUnit = "Pre-Release Camp";
             }
@@ -69,5 +69,3 @@ namespace Project_PRG271
 
 
 }
-
-    
