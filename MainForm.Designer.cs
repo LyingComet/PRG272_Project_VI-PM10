@@ -46,6 +46,13 @@
             this.lblSpecies = new System.Windows.Forms.Label();
             this.lblName = new System.Windows.Forms.Label();
             this.dgvAnimals = new System.Windows.Forms.DataGridView();
+            this.colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSpecies = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colAge = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colScore = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colHousingUnit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnDelete = new System.Windows.Forms.Button();
             this.grpSummary = new System.Windows.Forms.GroupBox();
             this.lblSeriousValue = new System.Windows.Forms.Label();
@@ -57,13 +64,6 @@
             this.lblAvgAgeValue = new System.Windows.Forms.Label();
             this.lblTotalValue = new System.Windows.Forms.Label();
             this.btnGenerateSummary = new System.Windows.Forms.Button();
-            this.colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colSpecies = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colAge = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colScore = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colHousingUnit = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.grpSearch.SuspendLayout();
             this.grpDetails.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAnimals)).BeginInit();
@@ -89,6 +89,7 @@
             this.btnSearch.TabIndex = 1;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // txtSearchId
             // 
@@ -256,6 +257,62 @@
             this.dgvAnimals.TabIndex = 2;
             this.dgvAnimals.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvAnimals_CellContentClick);
             // 
+            // colId
+            // 
+            this.colId.DataPropertyName = "Id";
+            this.colId.HeaderText = "Animal ID";
+            this.colId.MinimumWidth = 6;
+            this.colId.Name = "colId";
+            this.colId.ReadOnly = true;
+            // 
+            // colName
+            // 
+            this.colName.DataPropertyName = "Name";
+            this.colName.HeaderText = "Name";
+            this.colName.MinimumWidth = 6;
+            this.colName.Name = "colName";
+            this.colName.ReadOnly = true;
+            // 
+            // colSpecies
+            // 
+            this.colSpecies.DataPropertyName = "Species";
+            this.colSpecies.HeaderText = "Species";
+            this.colSpecies.MinimumWidth = 6;
+            this.colSpecies.Name = "colSpecies";
+            this.colSpecies.ReadOnly = true;
+            // 
+            // colAge
+            // 
+            this.colAge.DataPropertyName = "Age";
+            this.colAge.HeaderText = "Age";
+            this.colAge.MinimumWidth = 6;
+            this.colAge.Name = "colAge";
+            this.colAge.ReadOnly = true;
+            // 
+            // colScore
+            // 
+            this.colScore.DataPropertyName = "Score";
+            this.colScore.HeaderText = "Recovery Score";
+            this.colScore.MinimumWidth = 6;
+            this.colScore.Name = "colScore";
+            this.colScore.ReadOnly = true;
+            // 
+            // colStatus
+            // 
+            this.colStatus.DataPropertyName = "Status";
+            this.colStatus.HeaderText = "Status";
+            this.colStatus.MinimumWidth = 6;
+            this.colStatus.Name = "colStatus";
+            this.colStatus.ReadOnly = true;
+            // 
+            // colHousingUnit
+            // 
+            this.colHousingUnit.DataPropertyName = "HousingUnit";
+            this.colHousingUnit.HeaderText = "Housing Unit";
+            this.colHousingUnit.MinimumWidth = 6;
+            this.colHousingUnit.Name = "colHousingUnit";
+            this.colHousingUnit.ReadOnly = true;
+            // 
             // btnDelete
             // 
             this.btnDelete.Location = new System.Drawing.Point(368, 433);
@@ -366,62 +423,6 @@
             this.btnGenerateSummary.TabIndex = 0;
             this.btnGenerateSummary.Text = "Generate Summary";
             this.btnGenerateSummary.UseVisualStyleBackColor = true;
-            // 
-            // colId
-            // 
-            this.colId.DataPropertyName = "Id";
-            this.colId.HeaderText = "Animal ID";
-            this.colId.MinimumWidth = 6;
-            this.colId.Name = "colId";
-            this.colId.ReadOnly = true;
-            // 
-            // colName
-            // 
-            this.colName.DataPropertyName = "Name";
-            this.colName.HeaderText = "Name";
-            this.colName.MinimumWidth = 6;
-            this.colName.Name = "colName";
-            this.colName.ReadOnly = true;
-            // 
-            // colSpecies
-            // 
-            this.colSpecies.DataPropertyName = "Species";
-            this.colSpecies.HeaderText = "Species";
-            this.colSpecies.MinimumWidth = 6;
-            this.colSpecies.Name = "colSpecies";
-            this.colSpecies.ReadOnly = true;
-            // 
-            // colAge
-            // 
-            this.colAge.DataPropertyName = "Age";
-            this.colAge.HeaderText = "Age";
-            this.colAge.MinimumWidth = 6;
-            this.colAge.Name = "colAge";
-            this.colAge.ReadOnly = true;
-            // 
-            // colScore
-            // 
-            this.colScore.DataPropertyName = "Score";
-            this.colScore.HeaderText = "Recovery Score";
-            this.colScore.MinimumWidth = 6;
-            this.colScore.Name = "colScore";
-            this.colScore.ReadOnly = true;
-            // 
-            // colStatus
-            // 
-            this.colStatus.DataPropertyName = "Status";
-            this.colStatus.HeaderText = "Status";
-            this.colStatus.MinimumWidth = 6;
-            this.colStatus.Name = "colStatus";
-            this.colStatus.ReadOnly = true;
-            // 
-            // colHousingUnit
-            // 
-            this.colHousingUnit.DataPropertyName = "HousingUnit";
-            this.colHousingUnit.HeaderText = "Housing Unit";
-            this.colHousingUnit.MinimumWidth = 6;
-            this.colHousingUnit.Name = "colHousingUnit";
-            this.colHousingUnit.ReadOnly = true;
             // 
             // MainForm
             // 
