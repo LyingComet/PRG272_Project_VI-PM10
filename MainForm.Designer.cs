@@ -148,6 +148,7 @@
             this.btnSaveChanges.TabIndex = 7;
             this.btnSaveChanges.Text = "Save Changes";
             this.btnSaveChanges.UseVisualStyleBackColor = true;
+            this.btnSaveChanges.Click += new System.EventHandler(this.btnSaveChanges_Click);
             // 
             // btnAdd
             // 

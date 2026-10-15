@@ -240,5 +240,33 @@ namespace Project_PRG271
 
             return new Animal(id, name, species, age, score);
         }
+
+
+
+        public bool UpdatetAnimal( Animal updatedAnimal)
+        {
+            List<Animal> animals = Load();
+            List<string> lines = new List<string>();
+
+            for (int i = 0; i < animals.Count; i++)
+            { 
+                if(animals[i].Id == updatedAnimal.Id)
+                {
+                    animals[i] = updatedAnimal;
+                    break;
+                }
+
+            }
+
+            foreach (Animal animal in animals)
+            { 
+                lines.Add(animal.Id + "|" + animal.Name + "|" + animal.Species + "|" + animal.Age + "|" + animal.Score + "|" + animal.Status + "|" + animal.HousingUnit);
+
+            }
+
+            File.WriteAllLines(path, lines);
+
+            return true;
+        }
     }
 }

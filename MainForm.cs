@@ -194,9 +194,53 @@ namespace Project_PRG271
 
         private void btnClear_Click(object sender, EventArgs e)
         {
+            selectedAnimal = null;
+            editMode = false;
+            txtId.ReadOnly = false;
+            btnAdd.Enabled = true;
+            btnSaveChanges.Enabled = false;
 
+            ClearInputs();
+            dgvAnimals.ClearSelection();
+        }
+        // Lander here as well.
+        private void btnSaveChanges_Click(object sender, EventArgs e)
+        {
+            if (selectedAnimal == null) 
+            {
+                MessageBox.Show("Please load an animal before save");
+                
+                return;
+            }
 
+            string id = txtId.Text.Trim().ToUpper();
+            string name = txtName.Text.Trim().ToUpper();
+            string species = txtSpecies.Text.Trim().ToUpper();
+            string age = txtAge.Text.Trim().ToUpper();
+            string score = txtScore.Text.Trim().ToUpper();
 
+            AnimalValidator validator = new AnimalValidator();
+
+            string message = validator.Validate(id, name, species, age, score, animals, false);
+
+            //checks if string is empty somewhere and displays where the value isn't
+            if (!string.IsNullOrEmpty(message)) 
+            { 
+            
+            MessageBox.Show(message);
+                FocusField(validator.ErrorField);
+            return;
+            }
+
+            Animal updatedAnimal = new Animal(id, name, species, int.Parse(age), int.Parse(score));
+
+            handler.UpdateAnimal(updatedAnimal);
+
+            MessageBox.Show("Animal updated");
+
+            //refreshes grid and loads it again
+            RefreshGrid();
+            btnClear_Click(sender, e);
 
         }
     }
