@@ -15,7 +15,7 @@ All data is stored in plain text files. There is no database.
 | Lee Dikgale | 604808 | Add animal, validation, file helpers (append/rewrite), error handling, starter data |
 | Lander Le Roux | 604134 | Update/edit animals, search function with highlight, saving the updated data |
 | Mikael Quinlee Ruiters | 603543 | Delete animal, summary report |
-| _Angel youssef_ | _602990_ | Summary calculations , form labels, summary.txt, presentation slides |
+| Angel youssef | 602990 | Summary calculations , form labels, summary.txt, presentation slides |
 
 ## Built with
 
