@@ -15,6 +15,7 @@ All data is stored in plain text files. There is no database.
 | Lee Dikgale | _add student number_ | Add animal, validation, file helpers (append/rewrite), error handling, starter data |
 | _Member 3_ | _student number_ | Update animal |
 | _Member 4_ | _student number_ | Delete animal, summary report |
+| _Angel youssef_ | _602990_ | Summary calculations , form labels, summary.txt, presentation slides |
 
 ## Built with
 
