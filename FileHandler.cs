@@ -4,253 +4,241 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-
 namespace Project_PRG271
 {
-    //Data access class: everything that reads or writes animals.txt lives here
-    public static class FileHandler
+    public class FileHandler
     {
-        //file to be saved in same folder as exe
-        public static string FilePath = Path.Combine(AppContext.BaseDirectory, "animals.txt");
+        private string path = Path.Combine(AppContext.BaseDirectory, "animals.txt");
+        private int linesSkipped;
 
-        //bad lines skipped last time we loaded
-        public static int LinesSkipped = 0;
+        // starts with no skipped lines
+        public FileHandler()
+        {
+            this.linesSkipped = 0;
+        }
 
-        //UTF-8 without a BOM so the file matches the format the assessors use
-        private static readonly Encoding FileEncoding = new UTF8Encoding(false);
+        public int LinesSkipped { get => linesSkipped; set => linesSkipped = value; }
 
-        //reads animals.txt and returns the list of animals
-        public static List<Animal> Load()
+        // reads every animal from the file into a list and counts the bad lines
+        public List<Animal> Load()
         {
             List<Animal> animals = new List<Animal>();
-            LinesSkipped = 0;
+            linesSkipped = 0;
 
             try
             {
-                if (!File.Exists(FilePath))
+                if (!File.Exists(path))
                 {
-                    File.WriteAllText(FilePath, "");
+                    File.Create(path).Close();
                     return animals;
                 }
 
-                string[] lines = File.ReadAllLines(FilePath, FileEncoding);
-
-                foreach (string line in lines)
+                using (StreamReader reader = new StreamReader(path))
                 {
-                    Animal animal;
-                    if (!TryParseLine(line, out animal))
+                    string text;
+                    while ((text = reader.ReadLine()) != null)
                     {
-                        LinesSkipped++;
-                        continue;
-                    }
+                        Animal animal = LineToAnimal(text);
 
-                    //skip if we already got an animal using this ID
-                    bool alreadyThere = false;
-                    foreach (Animal a in animals)
-                    {
-                        if (a.Id == animal.Id)
+                        if (animal == null)
                         {
-                            alreadyThere = true;
+                            linesSkipped++;
+                            continue;
                         }
-                    }
 
-                    if (alreadyThere)
-                    {
-                        LinesSkipped++;
-                        continue;
-                    }
+                        bool alreadyThere = false;
+                        foreach (Animal a in animals)
+                        {
+                            if (a.Id == animal.Id)
+                            {
+                                alreadyThere = true;
+                            }
+                        }
 
-                    animals.Add(animal);
+                        if (alreadyThere)
+                        {
+                            linesSkipped++;
+                            continue;
+                        }
+
+                        animals.Add(animal);
+                    }
                 }
-            }
-            catch (IOException)
-            {
-                MessageBox.Show("animals.txt is being used by another program");
             }
             catch (UnauthorizedAccessException)
             {
-                MessageBox.Show("No permission to read animals.txt");
+                MessageBox.Show("The animals could not be loaded because you do not have permission to open animals.txt.");
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("The animals could not be loaded because animals.txt is open in another program. Close it and try again.");
             }
 
             return animals;
         }
 
-        //turns one line of the file into an Animal; returns false if the line is malformed
-        //(used by Load and RewriteAnimal so both follow exactly the same rules)
-        public static bool TryParseLine(string line, out Animal animal)
+        // adds one animal to the end of the file
+        public bool AddAnimal(Animal animal)
         {
-            animal = null;
-
-            string[] parts = line.Split('|');
-            if (parts.Length != 7)
-            {
-                return false;
-            }
-
-            //makes ID prefixes capitals
-            string id = parts[0].Trim().ToUpper();
-            if (!IsValidId(id))
-            {
-                return false;
-            }
-
-            //age/score must be whole nums
-            int age;
-            int score;
-            bool ageIsNumber = int.TryParse(parts[3].Trim(), out age);
-            bool scoreIsNumber = int.TryParse(parts[4].Trim(), out score);
-            if (!ageIsNumber || !scoreIsNumber)
-            {
-                return false;
-            }
-
-            //must be inbetween 0 and 100
-            if (age < 0 || age > 100 || score < 0 || score > 100)
-            {
-                return false;
-            }
-
-            //status and housing unit worked out from score
-            animal = new Animal(id, parts[1].Trim(), parts[2].Trim(), age, score);
-            return true;
-        }
-
-        //checks if id looks the way it should eg) WR-0001
-        public static bool IsValidId(string id)
-        {
-            if (id.Length != 7)
-            {
-                return false;
-            }
-
-            if (!id.StartsWith("WR-"))
-            {
-                return false;
-            }
-
-            //last 4 chars must be digit
-            for (int i = 3; i < 7; i++)
-            {
-                if (id[i] < '0' || id[i] > '9')
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        //adds ONE new line to the end of animals.txt without touching the existing lines
-        //returns true if it worked; otherwise errorMessage explains what went wrong
-        public static bool AppendAnimal(Animal animal, out string errorMessage)
-        {
-            errorMessage = "";
-
             try
             {
-                string newLine = animal.ToLine() + Environment.NewLine;
+                string line = animal.ToLine();
 
-                //if the last line has no line break (eg. a file typed by hand), add one first
-                //otherwise the new record would be glued onto the end of the last record
-                if (File.Exists(FilePath) && !EndsWithLineBreak())
+                if (File.Exists(path))
                 {
-                    newLine = Environment.NewLine + newLine;
+                    string allText;
+                    using (StreamReader reader = new StreamReader(path))
+                    {
+                        allText = reader.ReadToEnd();
+                    }
+
+                    if (allText != "" && !allText.EndsWith("\n"))
+                    {
+                        line = Environment.NewLine + line;
+                    }
                 }
 
-                //AppendAllText creates the file if it is missing
-                File.AppendAllText(FilePath, newLine, FileEncoding);
+                using (StreamWriter writer = new StreamWriter(path, true))
+                {
+                    writer.WriteLine(line);
+                }
+
                 return true;
             }
-            //specific exceptions first: FileNotFound/DirectoryNotFound inherit from IOException
             catch (DirectoryNotFoundException)
             {
-                errorMessage = "The animal was NOT saved. The folder for animals.txt could not be found.";
+                MessageBox.Show(animal.Name + " was not saved because the folder for animals.txt could not be found.");
             }
             catch (UnauthorizedAccessException)
             {
-                errorMessage = "The animal was NOT saved. animals.txt is read-only or you do not have permission to change it.";
+                MessageBox.Show(animal.Name + " was not saved because animals.txt is read-only. Untick read-only on the file and try again.");
             }
             catch (IOException)
             {
-                errorMessage = "The animal was NOT saved. animals.txt is being used by another program. Close it and try again.";
+                MessageBox.Show(animal.Name + " was not saved because animals.txt is open in another program. Close it and try again.");
             }
+
             return false;
         }
 
-        //rewrites animals.txt with ONE record changed (Update) or removed (Delete)
-        //pass the new version of the animal to update it, or null to delete it
-        //every other line (including skipped/malformed ones) is written back exactly as it was
-        public static bool RewriteAnimal(string id, Animal updatedAnimal, out string errorMessage)
+        // replaces one animal in the file with its new details
+        public bool UpdateAnimal(Animal animal)
         {
-            errorMessage = "";
+            return RewriteFile(animal.Id, animal);
+        }
+
+        // removes one animal from the file
+        public bool DeleteAnimal(string id)
+        {
+            return RewriteFile(id, null);
+        }
+
+        // writes the file again with only one animal changed or removed
+        private bool RewriteFile(string id, Animal newAnimal)
+        {
+            List<string> lines = new List<string>();
+            bool found = false;
 
             try
             {
-                string[] lines = File.ReadAllLines(FilePath, FileEncoding);
-                List<string> newLines = new List<string>();
-                bool found = false;
-
-                foreach (string line in lines)
+                using (StreamReader reader = new StreamReader(path))
                 {
-                    //only the FIRST valid line with this ID is the record shown in the grid
-                    Animal current;
-                    if (!found && TryParseLine(line, out current) && current.Id == id.ToUpper())
+                    string text;
+                    while ((text = reader.ReadLine()) != null)
                     {
-                        found = true;
+                        Animal animal = LineToAnimal(text);
 
-                        if (updatedAnimal != null)
+                        if (!found && animal != null && animal.Id == id)
                         {
-                            newLines.Add(updatedAnimal.ToLine());
-                        }
-                        //when updatedAnimal is null we leave the line out, which deletes it
-                        continue;
-                    }
+                            found = true;
 
-                    newLines.Add(line);
+                            if (newAnimal != null)
+                            {
+                                lines.Add(newAnimal.ToLine());
+                            }
+
+                            continue;
+                        }
+
+                        lines.Add(text);
+                    }
                 }
 
                 if (!found)
                 {
-                    errorMessage = "Animal " + id + " was not found in animals.txt. Nothing was changed.";
+                    MessageBox.Show(id + " could not be found in animals.txt, so nothing was changed.");
                     return false;
                 }
 
-                File.WriteAllLines(FilePath, newLines, FileEncoding);
+                using (StreamWriter writer = new StreamWriter(path, false))
+                {
+                    foreach (string line in lines)
+                    {
+                        writer.WriteLine(line);
+                    }
+                }
+
                 return true;
             }
-            //specific exceptions first: FileNotFound/DirectoryNotFound inherit from IOException
             catch (FileNotFoundException)
             {
-                errorMessage = "No changes were saved. animals.txt could not be found.";
+                MessageBox.Show("Nothing was changed because animals.txt could not be found.");
             }
             catch (DirectoryNotFoundException)
             {
-                errorMessage = "No changes were saved. The folder for animals.txt could not be found.";
+                MessageBox.Show("Nothing was changed because the folder for animals.txt could not be found.");
             }
             catch (UnauthorizedAccessException)
             {
-                errorMessage = "No changes were saved. animals.txt is read-only or you do not have permission to change it.";
+                MessageBox.Show("Nothing was changed because animals.txt is read-only. Untick read-only on the file and try again.");
             }
             catch (IOException)
             {
-                errorMessage = "No changes were saved. animals.txt is being used by another program. Close it and try again.";
+                MessageBox.Show("Nothing was changed because animals.txt is open in another program. Close it and try again.");
             }
+
             return false;
         }
 
-        //checks whether animals.txt ends with a line break (an empty file counts as yes)
-        private static bool EndsWithLineBreak()
+        // turns one line from the file into an animal, or null if the line is wrong
+        private Animal LineToAnimal(string text)
         {
-            using (FileStream stream = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                if (stream.Length == 0)
-                {
-                    return true;
-                }
+            string[] strings = text.Split('|');
 
-                //jump to the last byte and read it
-                stream.Seek(-1, SeekOrigin.End);
-                return stream.ReadByte() == '\n';
+            if (strings.Length != 7)
+            {
+                return null;
             }
+
+            string id = strings[0].Trim().ToUpper();
+            AnimalValidator validator = new AnimalValidator();
+
+            if (!validator.IsValidId(id))
+            {
+                return null;
+            }
+
+            int age, score;
+
+            try
+            {
+                age = int.Parse(strings[3].Trim());
+                score = int.Parse(strings[4].Trim());
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            if (age < 0 || age > 100 || score < 0 || score > 100)
+            {
+                return null;
+            }
+
+            string name = strings[1].Trim();
+            string species = strings[2].Trim();
+
+            return new Animal(id, name, species, age, score);
         }
     }
 }

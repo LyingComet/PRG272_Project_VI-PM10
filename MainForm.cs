@@ -15,6 +15,7 @@ namespace Project_PRG271
 
         //animals that showing on grid
         private List<Animal> animals = new List<Animal>();
+        private FileHandler handler = new FileHandler();
         public MainForm()
         {
             InitializeComponent();
@@ -27,15 +28,15 @@ namespace Project_PRG271
             RefreshGrid();
 
             //tells the user about the bad lines and its ONLY here so its gonna show once
-            if (FileHandler.LinesSkipped > 0)
+            if (handler.LinesSkipped > 0)
             {
-                MessageBox.Show(FileHandler.LinesSkipped + " Line/s Skipped"); 
+                MessageBox.Show(handler.LinesSkipped + " line(s) in animals.txt could not be read, so they were skipped.");
             }
         }
 
         private void RefreshGrid()
         {
-            animals = FileHandler.Load();
+            animals = handler.Load();
 
             //emptying grid so no double results
             dgvAnimals.DataSource = null;
@@ -46,59 +47,71 @@ namespace Project_PRG271
             dgvAnimals.CurrentCell = null;
         }
 
-        //Add button: validate the inputs, append ONE line to animals.txt, then show the result
+        // checks the inputs, saves the new animal and shows its status and housing
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            //same validation method Update uses; checkUnique = true because this is a new ID
-            ValidationResult result = AnimalValidator.Validate(txtId.Text, txtName.Text, txtSpecies.Text,
-                txtAge.Text, txtScore.Text, animals, true);
+            string id = txtId.Text.Trim().ToUpper();
+            string name = txtName.Text.Trim();
+            string species = txtSpecies.Text.Trim();
+            string age = txtAge.Text.Trim();
+            string score = txtScore.Text.Trim();
 
-            if (!result.IsValid)
+            AnimalValidator validator = new AnimalValidator();
+            string message = validator.Validate(id, name, species, age, score, animals, true);
+
+            if (message != "")
             {
-                //nothing is saved; name the problem and send the cursor back to that box
-                MessageBox.Show(result.Message, "Please fix this field", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                FocusField(result.Field);
+                MessageBox.Show(message, "Check your details", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                FocusField(validator.ErrorField);
                 return;
             }
 
-            Animal newAnimal = result.Animal;
+            Animal animal = new Animal(id, name, species, int.Parse(age), int.Parse(score));
 
-            string errorMessage;
-            if (!FileHandler.AppendAnimal(newAnimal, out errorMessage))
+            if (!handler.AddAnimal(animal))
             {
-                //keep what the user typed so they can try again after fixing the file problem
-                MessageBox.Show(errorMessage, "File error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            MessageBox.Show(newAnimal.Id + " (" + newAnimal.Name + ") was added." + Environment.NewLine + Environment.NewLine +
-                "Status: " + newAnimal.Status + Environment.NewLine +
-                "Housing Unit: " + newAnimal.HousingUnit,
-                "Animal added", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(animal.Name + " the " + animal.Species + " has been added." + Environment.NewLine + Environment.NewLine +
+                "Status: " + animal.Status + Environment.NewLine +
+                "Housing Unit: " + animal.HousingUnit, "Animal added", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             RefreshGrid();
             ClearInputs();
         }
 
-        //puts the cursor in the box that failed validation and highlights what is in it
-        private void FocusField(AnimalField field)
+        // puts the cursor back in the box that has the mistake
+        private void FocusField(string field)
         {
             TextBox box;
+
             switch (field)
             {
-                case AnimalField.Id: box = txtId; break;
-                case AnimalField.Name: box = txtName; break;
-                case AnimalField.Species: box = txtSpecies; break;
-                case AnimalField.Age: box = txtAge; break;
-                case AnimalField.Score: box = txtScore; break;
-                default: return;
+                case "ID":
+                    box = txtId;
+                    break;
+                case "Name":
+                    box = txtName;
+                    break;
+                case "Species":
+                    box = txtSpecies;
+                    break;
+                case "Age":
+                    box = txtAge;
+                    break;
+                case "Score":
+                    box = txtScore;
+                    break;
+                default:
+                    return;
             }
 
             box.Focus();
             box.SelectAll();
         }
 
-        //empties all the input boxes and puts the cursor back in Animal ID (Clear/Update can reuse this)
+        // empties all the input boxes
         private void ClearInputs()
         {
             txtId.Clear();

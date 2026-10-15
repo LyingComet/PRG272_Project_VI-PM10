@@ -1,166 +1,150 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Project_PRG271
 {
-    //the input boxes a validation error can point to (None = no error)
-    public enum AnimalField
+    public class AnimalValidator
     {
-        None,
-        Id,
-        Name,
-        Species,
-        Age,
-        Score
-    }
+        private string errorField;
 
-    //result of checking the form: either a valid Animal, or the field that is wrong + why
-    public class ValidationResult
-    {
-        public AnimalField Field { get; set; } = AnimalField.None;
-        public string Message { get; set; } = "";
-        public Animal Animal { get; set; }
-
-        //valid when no field was flagged
-        public bool IsValid
+        // starts with no field marked as wrong
+        public AnimalValidator()
         {
-            get { return Field == AnimalField.None; }
+            this.errorField = "";
         }
-    }
 
-    //business rules for animal input; Add AND Update both call Validate so the rules exist only once
-    public static class AnimalValidator
-    {
-        private const int MaxTextLength = 30;
-        private const int MinNumber = 0;
-        private const int MaxNumber = 100;
+        public string ErrorField { get => errorField; set => errorField = value; }
 
-        //checks every input (trimmed) in form order and stops at the first problem
-        //checkUnique = true for Add (ID must be new), false for Update (the ID is the animal being edited)
-        public static ValidationResult Validate(string idText, string nameText, string speciesText,
-            string ageText, string scoreText, List<Animal> existingAnimals, bool checkUnique)
+        // checks all the inputs and returns an error message, or "" if everything is correct
+        public string Validate(string id, string name, string species, string age, string score, List<Animal> animals, bool checkUnique)
         {
-            //trim everything first, and make the ID upper case (wr-0007 -> WR-0007)
-            string id = (idText ?? "").Trim().ToUpper();
-            string name = (nameText ?? "").Trim();
-            string species = (speciesText ?? "").Trim();
-            string age = (ageText ?? "").Trim();
-            string score = (scoreText ?? "").Trim();
+            errorField = "";
 
-            //--- Animal ID ---
             if (id == "")
             {
-                return Fail(AnimalField.Id, "Animal ID is required.");
-            }
-            if (!FileHandler.IsValidId(id))
-            {
-                return Fail(AnimalField.Id, "Animal ID must be WR- followed by exactly 4 digits, e.g. WR-0007.");
-            }
-            if (checkUnique && IdExists(id, existingAnimals))
-            {
-                return Fail(AnimalField.Id, "Animal ID " + id + " already exists. Each animal needs a unique ID.");
+                errorField = "ID";
+                return "Please enter an Animal ID, for example WR-0007.";
             }
 
-            //--- Name and Species ---
-            string textError = CheckText("Name", name);
-            if (textError != "")
+            if (!IsValidId(id))
             {
-                return Fail(AnimalField.Name, textError);
+                errorField = "ID";
+                return "Animal ID is incorrect, it should be WR- followed by 4 numbers.";
             }
 
-            textError = CheckText("Species", species);
-            if (textError != "")
+            if (checkUnique)
             {
-                return Fail(AnimalField.Species, textError);
+                foreach (Animal animal in animals)
+                {
+                    if (animal.Id == id)
+                    {
+                        errorField = "ID";
+                        return id + " is already being used by " + animal.Name + ". Please choose a different ID.";
+                    }
+                }
             }
 
-            //--- Age and Recovery Score ---
-            int ageValue;
-            string numberError = CheckWholeNumber("Age", age, out ageValue);
-            if (numberError != "")
+            string message = CheckText("name", name);
+            if (message != "")
             {
-                return Fail(AnimalField.Age, numberError);
+                errorField = "Name";
+                return message;
             }
 
-            int scoreValue;
-            numberError = CheckWholeNumber("Recovery Score", score, out scoreValue);
-            if (numberError != "")
+            message = CheckText("species", species);
+            if (message != "")
             {
-                return Fail(AnimalField.Score, numberError);
+                errorField = "Species";
+                return message;
             }
 
-            //all good: the Animal constructor calls SetStatus, so status + housing are calculated here
-            ValidationResult result = new ValidationResult();
-            result.Animal = new Animal(id, name, species, ageValue, scoreValue);
-            return result;
+            message = CheckNumber("age", age);
+            if (message != "")
+            {
+                errorField = "Age";
+                return message;
+            }
+
+            message = CheckNumber("recovery score", score);
+            if (message != "")
+            {
+                errorField = "Score";
+                return message;
+            }
+
+            return "";
         }
 
-        //builds a failed result that names the bad field
-        private static ValidationResult Fail(AnimalField field, string message)
+        // checks that the ID is WR- followed by 4 numbers
+        public bool IsValidId(string id)
         {
-            ValidationResult result = new ValidationResult();
-            result.Field = field;
-            result.Message = message;
-            return result;
-        }
-
-        //true if another animal already uses this ID
-        private static bool IdExists(string id, List<Animal> existingAnimals)
-        {
-            if (existingAnimals == null)
+            if (id.Length != 7)
             {
                 return false;
             }
 
-            foreach (Animal a in existingAnimals)
+            if (!id.StartsWith("WR-"))
             {
-                if (a.Id == id)
+                return false;
+            }
+
+            for (int i = 3; i < 7; i++)
+            {
+                if (id[i] < '0' || id[i] > '9')
                 {
-                    return true;
+                    return false;
                 }
             }
-            return false;
+
+            return true;
         }
 
-        //Name/Species rule: required, 1-30 characters, no | (the | separates fields in animals.txt)
-        //returns "" when the text is fine, otherwise the error message
-        private static string CheckText(string fieldName, string value)
+        // checks the name or species is filled in, not too long and has no |
+        private string CheckText(string fieldName, string text)
         {
-            if (value == "")
+            if (text == "")
             {
-                return fieldName + " is required.";
+                return "Please enter the animal's " + fieldName + ".";
             }
-            if (value.Length > MaxTextLength)
+
+            if (text.Length > 30)
             {
-                return fieldName + " must be 30 characters or fewer (you typed " + value.Length + ").";
+                return "The " + fieldName + " is too long. Please keep it to 30 characters or less.";
             }
-            if (value.Contains("|"))
+
+            if (text.Contains("|"))
             {
-                return fieldName + " cannot contain the | character.";
+                return "The " + fieldName + " cannot contain the | character. Please remove it.";
             }
+
             return "";
         }
 
-        //Age/Score rule: required whole number from 0 to 100 (no decimals, letters, + or - signs)
-        //returns "" when the text is fine, otherwise the error message
-        private static string CheckWholeNumber(string fieldName, string value, out int number)
+        // checks the age or score is a whole number from 0 to 100
+        private string CheckNumber(string fieldName, string text)
         {
-            number = 0;
-
-            if (value == "")
+            if (text == "")
             {
-                return fieldName + " is required.";
+                return "Please enter the animal's " + fieldName + ".";
             }
 
-            //NumberStyles.None only allows the digits 0-9, so "4.5", "abc" and "-3" are all rejected
-            if (!int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out number))
+            int number;
+
+            try
             {
-                return fieldName + " must be a whole number (no decimals or letters).";
+                number = int.Parse(text);
             }
-            if (number < MinNumber || number > MaxNumber)
+            catch (Exception)
             {
-                return fieldName + " must be between 0 and 100.";
+                return "The " + fieldName + " must be a whole number, like 5. Decimals and letters are not allowed.";
             }
+
+            if (number < 0 || number > 100)
+            {
+                return "The " + fieldName + " must be a number between 0 and 100.";
+            }
+
             return "";
         }
     }
