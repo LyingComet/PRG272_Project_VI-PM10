@@ -12,9 +12,9 @@ All data is stored in plain text files. There is no database.
 | Name | Student number | Feature(s) |
 |---|---|---|
 | Saiesha Ruanne Naidoo | 604096 | View animals (load, grid, skip malformed lines) |
-| Lee Dikgale | _add student number_ | Add animal, validation, file helpers (append/rewrite), error handling, starter data |
+| Lee Dikgale | 604808 | Add animal, validation, file helpers (append/rewrite), error handling, starter data |
 | Lander Le Roux | 604134 | Update/edit animals, search function with highlight, saving the updated data |
-| _Member 4_ | _student number_ | Delete animal, summary report |
+| Mikael Quinlee Ruiters | 603543 | Delete animal, summary report |
 | _Angel youssef_ | _602990_ | Summary calculations , form labels, summary.txt, presentation slides |
 
 ## Built with
