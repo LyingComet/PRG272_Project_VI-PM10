@@ -27,9 +27,9 @@ All data is stored in plain text files. There is no database.
 
 1. Clone the repo:
    ```
-   git clone https://github.com/SaieshaRuanneNaidoo/PRG271_Project_VI-PM10.git
+   git clone https://github.com/SaieshaRuanneNaidoo/PRG272_Project_VI-PM10.git
    ```
-2. Open `Project_PRG271.slnx` in Visual Studio 2022.
+2. Open `Project_PRG272.slnx` in Visual Studio 2022.
 3. Press **F5** (or **Build > Build Solution**, then **Debug > Start Debugging**).
 4. The starter `animals.txt` is copied next to the `.exe` (`bin\Debug\...`) on build ("Copy if newer"), so the grid shows sample data on the first run.
 
