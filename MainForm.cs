@@ -16,6 +16,8 @@ namespace Project_PRG271
         //animals that showing on grid
         private List<Animal> animals = new List<Animal>();
         private FileHandler handler = new FileHandler();
+        private Animal selectedAnimal = null;
+        private bool editMode = false;
         public MainForm()
         {
             InitializeComponent();
@@ -121,6 +123,23 @@ namespace Project_PRG271
             txtScore.Clear();
             txtId.Focus();
         }
+        //Lander !! explanation required for this method
+        private void LoadAnimaltoForm(Animal animal)
+        {
+            txtId.Text = animal.Id;
+            txtName.Text = animal.Name;
+            txtSpecies.Text = animal.Species;
+            txtAge.Text = animal.Age.ToString();
+            txtScore.Text = animal.Score.ToString();
+
+            selectedAnimal = animal;
+            editMode = true;
+
+            txtId.ReadOnly = false;
+            btnAdd.Enabled = false;
+            btnSaveChanges.Enabled = false;
+
+        }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
@@ -136,7 +155,12 @@ namespace Project_PRG271
 
         private void dgvAnimals_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0)
 
+                return;
+            
+            Animal animal = (Animal)dgvAnimals.Rows[e.RowIndex].DataBoundItem;
+            LoadAnimaltoForm(animal);
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -156,6 +180,23 @@ namespace Project_PRG271
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            string id = txtId.Text.Trim().ToUpper();
+            Animal animal = animals.FirstOrDefault(x => x.Id == id);
+
+            if (animal == null)
+            {
+                MessageBox.Show("Animal not found.");
+                return;
+            }
+
+            LoadAnimaltoForm(animal);
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+
+
+
 
         }
     }
