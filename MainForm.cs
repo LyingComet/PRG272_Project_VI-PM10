@@ -134,10 +134,9 @@ namespace Project_PRG271
 
             selectedAnimal = animal;
             editMode = true;
-
-            txtId.ReadOnly = false;
+            txtId.ReadOnly = true;
             btnAdd.Enabled = false;
-            btnSaveChanges.Enabled = false;
+            btnSaveChanges.Enabled = true;
 
         }
 
@@ -180,6 +179,7 @@ namespace Project_PRG271
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            
             string id = txtId.Text.Trim().ToUpper();
             Animal animal = animals.FirstOrDefault(x => x.Id == id);
 
