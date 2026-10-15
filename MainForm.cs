@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Project_PRG271
 {
@@ -86,7 +87,7 @@ namespace Project_PRG271
         // puts the cursor back in the box that has the mistake
         private void FocusField(string field)
         {
-            TextBox box;
+            System.Windows.Forms.TextBox box;
 
             switch (field)
             {
@@ -124,7 +125,7 @@ namespace Project_PRG271
             txtId.Focus();
         }
         //Lander !! explanation required for this method
-        private void LoadAnimaltoForm(Animal animal)
+        public void LoadAnimaltoForm(Animal animal)
         {
             txtId.Text = animal.Id;
             txtName.Text = animal.Name;
@@ -179,18 +180,25 @@ namespace Project_PRG271
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            
-            string id = txtId.Text.Trim().ToUpper();
-            Animal animal = animals.FirstOrDefault(x => x.Id == id);
 
-            if (animal == null)
+            string id = txtSearchId.Text.Trim().ToUpper();
+
+            foreach (Animal animal in animals)
             {
-                MessageBox.Show("Animal not found.");
-                return;
+                if (animal.Id.Trim().ToUpper() == id)
+                {
+                    LoadAnimaltoForm(animal);
+                    return;
+                }
             }
 
-            LoadAnimaltoForm(animal);
+            MessageBox.Show("Animal not found."); 
         }
+
+
+
+
+        
 
         private void btnClear_Click(object sender, EventArgs e)
         {
