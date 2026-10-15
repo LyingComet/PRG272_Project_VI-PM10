@@ -177,7 +177,7 @@ namespace Project_PRG271
         {
 
         }
-
+        //searches for the id add it to be edited and then also highlights the data.
         private void btnSearch_Click(object sender, EventArgs e)
         {
 
@@ -188,11 +188,27 @@ namespace Project_PRG271
                 if (animal.Id.Trim().ToUpper() == id)
                 {
                     LoadAnimaltoForm(animal);
+
+                    for (int i = 0; i < dgvAnimals.Rows.Count; i++)
+                    {
+                        Animal rowAnimal =
+                            (Animal)dgvAnimals.Rows[i].DataBoundItem;
+
+                        if (rowAnimal.Id == animal.Id)
+                        {
+                            dgvAnimals.ClearSelection();
+                            dgvAnimals.Rows[i].Selected = true;
+                            dgvAnimals.CurrentCell =
+                                dgvAnimals.Rows[i].Cells[0];
+                            break;
+                        }
+                    }
+
                     return;
                 }
             }
 
-            MessageBox.Show("Animal not found."); 
+            MessageBox.Show("Animal not found.");
         }
 
 
