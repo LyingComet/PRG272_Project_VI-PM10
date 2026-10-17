@@ -46,6 +46,7 @@ namespace Project_PRG271
             {
                 AnimalSummary summary = AnimalSummary.Calculate(ReadSummaryAnimals());
                 ShowSummary(summary);
+                SummaryReport.Save(summary, DateTime.Now);
 
             }
             catch (FileNotFoundException)
