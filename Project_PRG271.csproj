@@ -49,6 +49,7 @@
     <Compile Include="Animal.cs" />
     <Compile Include="AnimalSummary.cs" />
     <Compile Include="MainForm.Summary.cs" />
+    <Compile Include="SummaryReport.cs" />
     <Compile Include="AnimalValidator.cs" />
     <Compile Include="FileHandler.cs" />
     <Compile Include="MainForm.cs">
