@@ -267,6 +267,178 @@ namespace Project_PRG271
             btnClear_Click(sender, e);
 
         }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (dgvAnimals.SelectedRows.Count == 0)
+            {
+                MessageBox.Show(
+                    "Please select an animal to delete.",
+                    "No animal selected",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+            Animal animal = dgvAnimals.SelectedRows[0].DataBoundItem as Animal;
+
+            if (animal == null)
+            {
+                MessageBox.Show("Could not identify the selected animal.");
+                return;
+            }
+
+            DialogResult result = MessageBox.Show(
+            "Delete " + animal.Id + " (" + animal.Name +
+            ")? This cannot be undone.",
+            "Confirm deletion",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning);
+
+            if (result != DialogResult.Yes)
+            {
+                return;
+            }
+
+            bool clearForm = selectedAnimal != null &&
+                             selectedAnimal.Id == animal.Id;
+
+            if (!handler.DeleteAnimal(animal.Id))
+            {
+                return;
+            }
+
+            if (clearForm)
+            {
+                btnClear_Click(sender, e);
+            }
+            //got help here (google and youtube here)
+            RefreshGrid();
+
+            MessageBox.Show(
+                animal.Name + " was deleted successfully.",
+                "Animal deleted",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+
+        private void btnGenerateSummary_Click(object sender, EventArgs e)
+        {
+            List<Animal> currentAnimals = handler.Load();
+
+            int total = currentAnimals.Count;
+            double averageAge = 0;
+            double averageScore = 0;
+
+            int critical = 0;
+            int serious = 0;
+            int stable = 0;
+            int recovering = 0;
+            int releaseReady = 0;
+
+            foreach (Animal animal in currentAnimals)
+            {
+                averageAge += animal.Age;
+                averageScore += animal.Score;
+
+                switch (animal.Status)
+                {
+                    case "Critical":
+                        critical++;
+                        break;
+                    case "Serious":
+                        serious++;
+                        break;
+                    case "Stable":
+                        stable++;
+                        break;
+                    case "Recovering":
+                        recovering++;
+                        break;
+                    case "Release-Ready":
+                        releaseReady++;
+                        break;
+                }
+            }
+
+            if (total > 0)
+            {
+                averageAge /= total;
+                averageScore /= total;
+
+                lblAvgAgeValue.Text = averageAge.ToString("F2",
+                    System.Globalization.CultureInfo.InvariantCulture);
+                lblAvgScoreValue.Text = averageScore.ToString("F2",
+                    System.Globalization.CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                lblAvgAgeValue.Text = "N/A";
+                lblAvgScoreValue.Text = "N/A";
+            }
+
+            lblTotalValue.Text = total.ToString();
+            lblCriticalValue.Text = critical.ToString();
+            lblSeriousValue.Text = serious.ToString();
+            lblStableValue.Text = stable.ToString();
+            lblRecoveringValue.Text = recovering.ToString();
+            lblReleaseReadyValue.Text = releaseReady.ToString();
+
+            string path = System.IO.Path.Combine(
+                AppContext.BaseDirectory, "summary.txt");
+
+            try
+            {
+                List<string> lines = new List<string>();
+
+                lines.Add("BAOBAB RIDGE WILDLIFE REHABILITATION CENTRE");
+                lines.Add("ANIMAL SUMMARY REPORT");
+                lines.Add("Generated: " +
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+                lines.Add("Total animals:    " + total);
+
+                string ageText = total == 0
+                    ? "N/A"
+                    : averageAge.ToString("F2",
+                        System.Globalization.CultureInfo.InvariantCulture);
+
+                string scoreText = total == 0
+                    ? "N/A"
+                    : averageScore.ToString("F2",
+                        System.Globalization.CultureInfo.InvariantCulture);
+
+                lines.Add("Average age (years):      " + ageText);
+                lines.Add("Average recovery score:   " + scoreText);
+                lines.Add("Animals per status:");
+                lines.Add("Critical:               " + critical);
+                lines.Add("Serious:                " + serious);
+                lines.Add("Stable:                 " + stable);
+                lines.Add("Recovering:             " + recovering);
+                lines.Add("Release-Ready:          " + releaseReady);
+
+                System.IO.File.WriteAllLines(path, lines,
+                    System.Text.Encoding.UTF8);
+
+                MessageBox.Show(
+                    "Summary generated successfully.",
+                    "Summary Report",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (System.IO.IOException)
+            {
+                MessageBox.Show("Could not write summary.txt. Check whether the file is open or in use.");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show("Could not write summary.txt because you do not have permission.");
+            }
+        }
+
+        private void label4_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 
