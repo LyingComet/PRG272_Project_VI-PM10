@@ -12,9 +12,10 @@ All data is stored in plain text files. There is no database.
 | Name | Student number | Feature(s) |
 |---|---|---|
 | Saiesha Ruanne Naidoo | 604096 | View animals (load, grid, skip malformed lines) |
-| Lee Dikgale | _add student number_ | Add animal, validation, file helpers (append/rewrite), error handling, starter data |
-| _Member 3_ | _student number_ | Update animal |
-| _Member 4_ | _student number_ | Delete animal, summary report |
+| Lee Dikgale | 604808 | Add animal, validation, file helpers (append/rewrite), error handling, starter data |
+| Lander Le Roux | 604134 | Update/edit animals, search function with highlight, saving the updated data |
+| Mikael Quinlee Ruiters | 603543 | Delete animal, summary report |
+| Angel youssef | 602990 | Summary calculations , form labels, summary.txt, presentation slides |
 
 ## Built with
 
@@ -26,9 +27,9 @@ All data is stored in plain text files. There is no database.
 
 1. Clone the repo:
    ```
-   git clone https://github.com/SaieshaRuanneNaidoo/PRG271_Project_VI-PM10.git
+   git clone https://github.com/SaieshaRuanneNaidoo/PRG272_Project_VI-PM10.git
    ```
-2. Open `Project_PRG271.slnx` in Visual Studio 2022.
+2. Open `Project_PRG272.slnx` in Visual Studio 2022.
 3. Press **F5** (or **Build > Build Solution**, then **Debug > Start Debugging**).
 4. The starter `animals.txt` is copied next to the `.exe` (`bin\Debug\...`) on build ("Copy if newer"), so the grid shows sample data on the first run.
 
@@ -82,12 +83,30 @@ WR-0007|Naledi|Leopard|7|60|Recovering|Outdoor Enclosure
 
 - Written beside the `.exe` when **Generate Summary** is clicked, and overwritten each time.
 - Contains the timestamp (`yyyy-MM-dd HH:mm`), total animals, average age, average recovery score (2 decimals with a full stop, or `N/A` if there are no animals) and a count for each of the 5 statuses.
-- _Paste the exact layout here once the summary feature is merged._
-- Not committed to Git (listed in `.gitignore`).
+
+Example using the starter data. The timestamp and values change each time the report is generated.
+
+
+BAOBAB RIDGE WILDLIFE REHABILITATION CENTRE
+ANIMAL SUMMARY REPORT
+
+Generated: 2026-10-19 18:30
+---------------------------------------
+Total animals:           10
+Average age (years):     5.40
+Average recovery score:  50.30
+---------------------------------------
+Animals per status:
+  Critical:              2
+  Serious:               2
+  Stable:                2
+  Recovering:            2
+  Release-Ready:         2
+
 
 ## Known limitations
 
 - Only one person should use the app on a file at a time. Two copies of the app editing the same `animals.txt` can overwrite each other's changes.
 - Changes made to `animals.txt` outside the app are only picked up the next time the grid refreshes.
 - Name and Species can't contain `|`, because it is the field separator.
-- _Add any others found during testing._
+
