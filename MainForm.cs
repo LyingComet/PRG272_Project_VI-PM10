@@ -124,7 +124,7 @@ namespace Project_PRG271
             txtScore.Clear();
             txtId.Focus();
         }
-        //Lander !! explanation required for this method
+        //An method that loads the animals to the form for the search function
         public void LoadAnimaltoForm(Animal animal)
         {
             txtId.Text = animal.Id;
@@ -215,7 +215,7 @@ namespace Project_PRG271
 
 
         
-
+        //Clears the cache in the textboxes
         private void btnClear_Click(object sender, EventArgs e)
         {
             selectedAnimal = null;
@@ -227,7 +227,7 @@ namespace Project_PRG271
             ClearInputs();
             dgvAnimals.ClearSelection();
         }
-        // Lander here as well.
+        // Checks if the animal is here before it can update the changes to the text file.
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
             if (selectedAnimal == null) 
