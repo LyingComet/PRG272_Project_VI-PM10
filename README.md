@@ -83,8 +83,26 @@ WR-0007|Naledi|Leopard|7|60|Recovering|Outdoor Enclosure
 
 - Written beside the `.exe` when **Generate Summary** is clicked, and overwritten each time.
 - Contains the timestamp (`yyyy-MM-dd HH:mm`), total animals, average age, average recovery score (2 decimals with a full stop, or `N/A` if there are no animals) and a count for each of the 5 statuses.
-- _Paste the exact layout here once the summary feature is merged._
-- Not committed to Git (listed in `.gitignore`).
+
+Example using the starter data. The timestamp and values change each time the report is generated.
+
+
+BAOBAB RIDGE WILDLIFE REHABILITATION CENTRE
+ANIMAL SUMMARY REPORT
+
+Generated: 2026-10-19 18:30
+---------------------------------------
+Total animals:           10
+Average age (years):     5.40
+Average recovery score:  50.30
+---------------------------------------
+Animals per status:
+  Critical:              2
+  Serious:               2
+  Stable:                2
+  Recovering:            2
+  Release-Ready:         2
+
 
 ## Known limitations
 
