@@ -390,41 +390,31 @@ namespace Project_PRG271
 
             try
             {
-                List<string> lines = new List<string>();
+               List<string> lines = new List<string>();
 
-                lines.Add("BAOBAB RIDGE WILDLIFE REHABILITATION CENTRE");
-                lines.Add("ANIMAL SUMMARY REPORT");
-                lines.Add("Generated: " +
-                    DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
-                lines.Add("Total animals:    " + total);
+lines.Add("BAOBAB RIDGE WILDLIFE REHABILITATION CENTRE");
+lines.Add("ANIMAL SUMMARY REPORT");
+lines.Add("Generated: " + DateTime.Now.ToString(
+    "yyyy-MM-dd HH:mm",
+    System.Globalization.CultureInfo.InvariantCulture));
 
-                string ageText = total == 0
-                    ? "N/A"
-                    : averageAge.ToString("F2",
-                        System.Globalization.CultureInfo.InvariantCulture);
+lines.Add("---------------------------------------");
+lines.Add("Total animals:           " + total);
+lines.Add("Average age (years):     " + lblAvgAgeValue.Text);
+lines.Add("Average recovery score:  " + lblAvgScoreValue.Text);
+lines.Add("---------------------------------------");
+lines.Add("Animals per status:");
+lines.Add("  Critical:              " + critical);
+lines.Add("  Serious:               " + serious);
+lines.Add("  Stable:                " + stable);
+lines.Add("  Recovering:            " + recovering);
+lines.Add("  Release-Ready:         " + releaseReady);
 
-                string scoreText = total == 0
-                    ? "N/A"
-                    : averageScore.ToString("F2",
-                        System.Globalization.CultureInfo.InvariantCulture);
+System.IO.File.WriteAllLines(
+    path, lines, System.Text.Encoding.UTF8);
 
-                lines.Add("Average age (years):      " + ageText);
-                lines.Add("Average recovery score:   " + scoreText);
-                lines.Add("Animals per status:");
-                lines.Add("Critical:               " + critical);
-                lines.Add("Serious:                " + serious);
-                lines.Add("Stable:                 " + stable);
-                lines.Add("Recovering:             " + recovering);
-                lines.Add("Release-Ready:          " + releaseReady);
-
-                System.IO.File.WriteAllLines(path, lines,
-                    System.Text.Encoding.UTF8);
-
-                MessageBox.Show(
-                    "Summary generated successfully.",
-                    "Summary Report",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+    MessageBox.Show("Summary generated successfully.");
+    
             }
             catch (System.IO.IOException)
             {
