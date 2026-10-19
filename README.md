@@ -91,4 +91,4 @@ WR-0007|Naledi|Leopard|7|60|Recovering|Outdoor Enclosure
 - Only one person should use the app on a file at a time. Two copies of the app editing the same `animals.txt` can overwrite each other's changes.
 - Changes made to `animals.txt` outside the app are only picked up the next time the grid refreshes.
 - Name and Species can't contain `|`, because it is the field separator.
-- _Add any others found during testing._
+
