@@ -22,7 +22,7 @@ namespace Project_PRG271
         public MainForm()
         {
             InitializeComponent();
-            InitializeSummary();
+         
             dgvAnimals.AutoGenerateColumns = false;
         }
 
